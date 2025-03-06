@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { schema } from "./InputField";
 import { useForm } from "react-hook-form";
-import { Button, Form } from "antd";
+import { Button, Form, Modal } from "antd";
 import TaskField from "./TaskField";
 import CategoryField from "./CategoryField";
 import DateSelect from "./DateSelect";
@@ -12,8 +12,9 @@ import { Todo } from "../../../model";
 interface Props {
   user: Todo;
   closeModal: () => void;
+  handleOpen: boolean;
 }
-const EditFields: React.FC<Props> = ({ user, closeModal }) => {
+const EditFields: React.FC<Props> = ({ user, closeModal, handleOpen }) => {
   const {
     watch,
     control,
@@ -37,7 +38,8 @@ const onSubmit = ((data: any) => {
   });
   return (
     <div>
-      <Form
+        <Modal open={handleOpen} footer = {null}>
+        <Form
         onFinish={handleSubmit(onSubmit)}
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 14 }}
@@ -70,6 +72,8 @@ const onSubmit = ((data: any) => {
           Save
         </Button>
       </Form>
+        </Modal>
+
     </div>
   );
 };

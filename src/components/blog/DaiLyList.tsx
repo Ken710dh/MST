@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Todo } from "../../model";
 import { Button, Modal, Typography } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteTodo } from "../../redux-tookit/todoListsSlice";
 import { RootState } from "../../store"
+import EditFields from "./form/EditFields";
 
 const DaiLyList: React.FC = () => {
   const dispatch = useDispatch();
@@ -17,7 +18,8 @@ const DaiLyList: React.FC = () => {
       return acc;
     }, {} as { [key: number]: boolean })
   );
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModelDeleteOpen, setModalDeleteOpen] = useState(false);
+  const [isModelEditteOpen, setModalEditOpen] = useState(false);
   const handleCheckboxChange = (id: number) => {
     setCheckTasks({
       ...checkTasks,
@@ -25,16 +27,22 @@ const DaiLyList: React.FC = () => {
     });
   };
 
-  const showModal = () => {
-    setIsModalOpen(true);
+  const showModalDelete = () => {
+    setModalDeleteOpen(true);
+  };
+  const showModalEdit= () => {
+    setModalEditOpen(true);
   };
 
-  const handleCancel = () => {
-    setIsModalOpen(false);
+  const handleDeleteCancel = () => {
+    setModalDeleteOpen(false);
+  };
+  const handleEditCancel = () => {
+    setModalEditOpen(false);
   };
   const deleteTodoTask = (id: number) => {
     dispatch(deleteTodo(id));
-    setIsModalOpen(false);
+    setModalDeleteOpen(false);
   };
   return (
     <div className="grid grid-cols-2 gap-4 text-[14px] p-2 overflow-y">
@@ -83,20 +91,28 @@ const DaiLyList: React.FC = () => {
               type="text"
               style={{ fontSize: "20px", color: "gray" }}
               icon={<DeleteOutlined />}
-              onClick={showModal}
+              onClick={showModalDelete}
+            />
+            <Button
+              type="text"
+              style={{ fontSize: "20px", color: "gray" }}
+              icon={<EditOutlined />}
+              onClick={showModalEdit}
             />
           </div>
 
           <Modal
             title="Basic Modal"
-            open={isModalOpen}
+            open={isModelDeleteOpen}
             onOk={() => deleteTodoTask(todo.id)}
-            onCancel={handleCancel}
+            onCancel={handleDeleteCancel}
           >
+
             <Typography.Text>
               Are you sure you want to delete this task?
             </Typography.Text>
           </Modal>
+          <EditFields handleOpen={isModelEditteOpen} closeModal={handleEditCancel} user={todo}/>
         </div>
       ))}
     </div>
