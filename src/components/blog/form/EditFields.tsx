@@ -23,6 +23,7 @@ const EditFields: React.FC<Props> = ({ user, closeModal, handleOpen }) => {
   } = useForm({
     resolver: zodResolver(schema),
     mode: "onBlur",
+    defaultValues: user,
   });
 
   const startDate = watch("startdate");
@@ -38,7 +39,7 @@ const onSubmit = ((data: any) => {
   });
   return (
     <div>
-        <Modal open={handleOpen} footer = {null}>
+        <Modal open={handleOpen} footer = {null} onCancel={closeModal}>
         <Form
         onFinish={handleSubmit(onSubmit)}
         labelCol={{ span: 4 }}
@@ -55,6 +56,7 @@ const onSubmit = ((data: any) => {
           name="startdate"
           errors={errors}
           control={control}
+          
         />
         {/* End Date */}
 
@@ -70,6 +72,9 @@ const onSubmit = ((data: any) => {
 
         <Button type="primary" htmlType="submit">
           Save
+        </Button>
+        <Button onClick={closeModal} type="default" htmlType="button">
+          Cancel
         </Button>
       </Form>
         </Modal>
