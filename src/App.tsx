@@ -1,10 +1,11 @@
 import { useCallback, useState } from "react";
 import "./App.css";
-import InputField from "./components/InputField";
+import InputField from "./components/blog/InputField";
 import { addTodos } from "./redux-tookit/todoListsSlice";
 import { useDispatch, useSelector } from "react-redux";
-import DaiLyList from "./components/DaiLyList";
+import DaiLyList from "./components/blog/DaiLyList";
 import { RootState } from "./store";
+import { Todo } from "./model";
 const App: React.FC = () => {
   // //data type in ts
   // const name: string= "Hoang"
@@ -35,20 +36,26 @@ const App: React.FC = () => {
   // let printName: (num: string, character: string) => void;
   const dispatch = useDispatch();
   const todos = useSelector((state: RootState) => state.todoLists.todos);
-
+  const handleAddTodo = useCallback(
+    (todo: Todo) => {
+      dispatch(addTodos(todo));
+    },
+    [dispatch]
+  );
 
   return (
     <>
-      <div className="bg-[lightblue] w-full h-screen flex flex-col items-center">
+      <div className=" w-full h-screen flex flex-col items-center">
         <h1 className="bg-gradient-to-r from-red-500 to-yellow-500 bg-clip-text text-center text-transparent text-[40px] font-bold">
           DaiLy Task
         </h1>
-        <div className=" w-[80%] h-[80%] grid grid-cols-6 gap-10">
+        <div className=" w-[80%] h-[80%] grid grid-cols-7">
           <div className="col-span-2 rounded  bg-white p-4 flex  border border-gray-300 flex flex-col">
-            <InputField/>
-
+            <InputField handleAddTodo={handleAddTodo} />
           </div>
-          {/* <div className="col-span-4 rounded bg-white border border-gray-300"><DaiLyList dailytasks={todos} /></div> */}
+          <div className="col-span-5 rounded bg-white border border-gray-300">
+            <DaiLyList dailytasks={todos} />
+          </div>
         </div>
       </div>
     </>

@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { getFormattedDate } from "../moment";
+import { Todo } from "../model";
 
 const initialState: TodoStates = {
   todos: [],
@@ -7,27 +8,19 @@ const initialState: TodoStates = {
 interface TodoStates {
   todos: Todo[];
 }
-interface Todo {
-  id: number;
-  task: string;
-  date: string;
-  startdate: string;
-  category: string;
-  enddate: string;
-  completed: boolean;
-}
+
 const todoSlice = createSlice({
   name: "todos",
   initialState,
   reducers: {
-    addTodos: (state, action: PayloadAction<string>) => {
+    addTodos: (state, action: PayloadAction<Todo>) => {
       state.todos.push({
-        id: Date.now(),  
-        task: action.payload,
-        category: action.payload,
-        startdate: action.payload,
-        enddate: action.payload,
+        id: Date.now(),
+        task: action.payload.task,
+        category: action.payload.category,
         date: getFormattedDate(),
+        startdate: action.payload.startdate,
+        enddate: action.payload.enddate,
         completed: false,
       });
     },
@@ -37,12 +30,11 @@ const todoSlice = createSlice({
         todo.completed = !todo.completed;
       }
     },
-    deleteTodo: (state, action: PayloadAction<number>)=>{
-        state.todos = state.todos.filter((t)=> t.id !== action.payload)
-        }  
-    }
+    deleteTodo: (state, action: PayloadAction<number>) => {
+      state.todos = state.todos.filter((t) => t.id !== action.payload);
+    },
   },
-);
+});
 //auto generate action
-export const {addTodos, toggleTodo, deleteTodo} = todoSlice.actions
-export default todoSlice.reducer
+export const { addTodos, toggleTodo, deleteTodo } = todoSlice.actions;
+export default todoSlice.reducer;

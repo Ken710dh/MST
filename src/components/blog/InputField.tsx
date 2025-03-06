@@ -1,33 +1,47 @@
 import React from "react";
 import { Button, DatePicker, Form, Input, Select } from "antd";
-import { dummyCategories } from "../service/api/catergoryTask";
+import { dummyCategories } from "../../service/api/catergoryTask";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import z from "zod";
+import moment from "moment";
+import * as z from "zod";
+import { Todo } from "../../model";
+import { getFormattedDate } from "../../moment";
 
 const schema = z.object({
-  task: z.string().nonempty("Task is required"),
-  category: z.string().nonempty("Category is required"),
-  startdate: z.string().nonempty("Start date is required"),
-  enddate: z.string().nonempty("End date is required"),
+  task: z.string().min(1, { message: "Task is required" }),
+  category: z.string().min(1, { message: "Category is required" }),
+  startdate: z.string().min(1, { message: "Start date is required" }),
+  enddate: z.string().min(1, { message: "End date is required" }),
 });
-
-const InputField: React.FC = () => {
+interface Props {
+  handleAddTodo: (data: Todo) => void;
+}
+const InputField: React.FC<Props> = ({ handleAddTodo }) => {
   const {
+    watch,
     reset,
     handleSubmit,
     control,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(schema),
+    mode: "onBlur",
   });
-
+  const startDate = watch("startdate");
   const onSubmit = (data: any) => {
     console.log("🔥 onSubmit function is called!");
     console.log("✅ Form Data:", data);
+    const todo: Todo = {
+      ...data,
+      id: Date.now(),
+      date: getFormattedDate(),
+      completed: false,
+    };
+    handleAddTodo(todo);
+
     reset();
   };
-
   return (
     <Form
       onFinish={handleSubmit(onSubmit)}
@@ -36,7 +50,6 @@ const InputField: React.FC = () => {
       layout="horizontal"
       style={{ maxWidth: 600 }}
     >
-      {/* Task Input */}
       <Form.Item
         label="Task"
         validateStatus={errors.task ? "error" : ""}
@@ -69,8 +82,6 @@ const InputField: React.FC = () => {
           )}
         />
       </Form.Item>
-
-      {/* Start Date */}
       <Form.Item
         label="Start date"
         validateStatus={errors.startdate ? "error" : ""}
@@ -82,17 +93,15 @@ const InputField: React.FC = () => {
           render={({ field }) => (
             <DatePicker
               {...field}
+              value={field.value ? moment(field.value) : null} // Ensure controlled state
               onChange={(date) =>
-                field.onChange(
-                  date ? new Date(date).toISOString().split("T")[0] : ""
-                )
+                field.onChange(date ? date.format("YYYY-MM-DD") : "")
               }
             />
           )}
         />
       </Form.Item>
 
-      {/* End Date */}
       <Form.Item
         label="End date"
         validateStatus={errors.enddate ? "error" : ""}
@@ -104,10 +113,14 @@ const InputField: React.FC = () => {
           render={({ field }) => (
             <DatePicker
               {...field}
+              disabledDate={(current) => {
+                return startDate
+                  ? current && current.isBefore(startDate, "day")
+                  : false;
+              }}
+              value={field.value ? moment(field.value) : null} // Ensure controlled state
               onChange={(date) =>
-                field.onChange(
-                  date ? new Date(date).toISOString().split("T")[0] : ""
-                )
+                field.onChange(date ? date.format("YYYY-MM-DD") : "")
               }
             />
           )}
