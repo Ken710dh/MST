@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { Todo } from "../../model";
 import { Button, Modal, Typography } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { deleteTodo } from "../../redux-tookit/todoListsSlice";
-interface Props {
-  dailytasks: Todo[];
-}
-const DaiLyList: React.FC<Props> = ({ dailytasks }) => {
+import { RootState } from "../../store"
+
+const DaiLyList: React.FC = () => {
   const dispatch = useDispatch();
+  const dailytasks = useSelector((state: RootState) => state.todoLists.todos);
   const [checkTasks, setCheckTasks] = React.useState<{
     [key: number]: boolean;
   }>(

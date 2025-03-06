@@ -24,6 +24,15 @@ const todoSlice = createSlice({
         completed: false,
       });
     },
+    editTodo: (state, action: PayloadAction<Todo>) => {
+      const todo = state.todos.find((t) => t.id === action.payload.id);
+      if (todo) {
+        todo.task = action.payload.task;
+        todo.category = action.payload.category;
+        todo.startdate = action.payload.startdate;
+        todo.enddate = action.payload.enddate;
+      }
+    },
     toggleTodo: (state, action: PayloadAction<number>) => {
       const todo = state.todos.find((t) => t.id === action.payload);
       if (todo) {
@@ -36,5 +45,5 @@ const todoSlice = createSlice({
   },
 });
 //auto generate action
-export const { addTodos, toggleTodo, deleteTodo } = todoSlice.actions;
+export const { addTodos, editTodo, toggleTodo, deleteTodo } = todoSlice.actions;
 export default todoSlice.reducer;

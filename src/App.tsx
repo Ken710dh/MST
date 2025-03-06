@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import "./App.css";
-import InputField from "./components/blog/InputField";
+import InputField from "./components/blog/form/InputField";
 import { addTodos } from "./redux-tookit/todoListsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import DaiLyList from "./components/blog/DaiLyList";
@@ -34,14 +34,6 @@ const App: React.FC = () => {
   // let variable: any
   // //function
   // let printName: (num: string, character: string) => void;
-  const dispatch = useDispatch();
-  const todos = useSelector((state: RootState) => state.todoLists.todos);
-  const handleAddTodo = useCallback(
-    (todo: Todo) => {
-      dispatch(addTodos(todo));
-    },
-    [dispatch]
-  );
 
   return (
     <>
@@ -51,10 +43,10 @@ const App: React.FC = () => {
         </h1>
         <div className=" w-[80%] h-[80%] grid grid-cols-7">
           <div className="col-span-2 rounded  bg-white p-4 flex  border border-gray-300 flex flex-col">
-            <InputField handleAddTodo={handleAddTodo} />
+            <InputField/>
           </div>
           <div className="col-span-5 rounded bg-white border border-gray-300">
-            <DaiLyList dailytasks={todos} />
+            <DaiLyList/>
           </div>
         </div>
       </div>
